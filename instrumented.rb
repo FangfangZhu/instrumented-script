@@ -78,10 +78,10 @@ def add_simplecov_start(vcap_src_home, component)
 
   case component
     when 'cloud_controller', 'health_manager'
-      start_script = File.join(vcap_src_home, "../cloud_controller/#{component}/bin/#{component}")
+      start_script = File.join(vcap_src_home, "cloud_controller/#{component}/bin/#{component}")
       do_insert_simplecov_start(component, vcap_src_home, start_script)
     when 'router', 'dea', 'uaa'
-      start_script = File.join(vcap_src_home, "../#{component}/bin/#{component}")
+      start_script = File.join(vcap_src_home, "#{component}/bin/#{component}")
       do_insert_simplecov_start(component, vcap_src_home, start_script)
     when 'redis', 'mysql', 'mongodb', 'rabbit', 'neo4j', 'memcached', 'postgresql', 'vblob',
           'echo', 'elasticsearch', 'couchdb'
@@ -99,7 +99,7 @@ def add_simplecov_start(vcap_src_home, component)
 end
 
 def modify_cc_start(vcap_src_home)
-  start_script = File.join(vcap_src_home, "../cloud_controller/cloud_controller/bin/cloud_controller")
+  start_script = File.join(vcap_src_home, "cloud_controller/cloud_controller/bin/cloud_controller")
   dest_script = "#{start_script}.rb"
   FileUtils.cp(start_script, dest_script)
   code_block = "#!/usr/bin/env ruby\n$:.unshift(File.dirname(__FILE__))\nrequire 'cloud_controller'\n"
@@ -113,12 +113,12 @@ def instrument(vcap_src_home)
 
   core_components = %w(cloud_controller router health_manager dea)
   core_components.each do |comp|
-    path = File.join(vcap_src_home, '..', comp)
+    path = File.join(vcap_src_home, comp)
     case comp
       when 'cloud_controller', 'health_manager'
-        install_simplecov(File.join(vcap_src_home, '../cloud_controller', comp))
+        install_simplecov(File.join(vcap_src_home, 'cloud_controller', comp))
       when 'router', 'dea'
-        install_simplecov(File.join(vcap_src_home, '..', comp))
+        install_simplecov(File.join(vcap_src_home, comp))
     end
     add_simplecov_start(vcap_src_home, comp)
   end
@@ -138,15 +138,15 @@ def reset(vcap_src_home)
   exec("git reset --hard") if fork == nil
   Process.wait
 
-  Dir.chdir(File.join(vcap_src_home, '../cloud_controller'))
+  Dir.chdir(File.join(vcap_src_home, 'cloud_controller'))
   exec("git reset --hard") if fork == nil
   Process.wait
 
-  Dir.chdir(File.join(vcap_src_home, '../dea'))
+  Dir.chdir(File.join(vcap_src_home, 'dea'))
   exec("git reset --hard") if fork == nil
   Process.wait
 
-  Dir.chdir(File.join(vcap_src_home, '../router'))
+  Dir.chdir(File.join(vcap_src_home, 'router'))
   exec("git reset --hard") if fork == nil
   Process.wait
 

@@ -6,6 +6,10 @@ def save_gemfile(file_handler, data)
   # insert gem "simplecov" at second line
 
   simplecov_str = "gem 'simplecov'\ngem 'simplecov-rcov'\n"
+  if data.select {|line| line =~ /multi_json/ }.empty?
+    simplecov_str += "gem 'multi_json', '~>1.3.7'\n"
+  end
+
   data.insert(1, simplecov_str)
   file_handler.rewind
   file_handler.write(data.join(""))
